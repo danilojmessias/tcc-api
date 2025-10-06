@@ -1,0 +1,18 @@
+{
+  "entryFile": "src/app.ts",
+  "noImplicitAdditionalProperties": "throw-on-extras",
+  "controllerPathGlobs": ["src/controllers/**/*Controller.ts"],
+  "spec": {
+    "outputDirectory": "src/swagger",
+    "specVersion": 3,
+    "name": "TCC API",
+    "description": "API para gerenciamento de moradores, visitantes e visitas",
+    "version": "1.0.0",
+    "host": "localhost:3000",
+    "basePath": "/api"
+  },
+  "routes": {
+    "routesDir": "src/routes",
+    "middleware": "express"
+  }
+}

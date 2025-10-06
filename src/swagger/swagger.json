@@ -1,0 +1,901 @@
+{
+	"openapi": "3.0.0",
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"VisitanteResponse": {
+				"properties": {
+					"_id": {
+						"type": "string"
+					},
+					"nome": {
+						"type": "string"
+					},
+					"cpf": {
+						"type": "string"
+					},
+					"tipo": {
+						"type": "string"
+					},
+					"descricao": {
+						"type": "string"
+					},
+					"createdAt": {
+						"type": "string"
+					},
+					"updatedAt": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"_id",
+					"nome",
+					"cpf",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"VisitaResponse": {
+				"properties": {
+					"_id": {
+						"type": "string"
+					},
+					"visitante": {
+						"$ref": "#/components/schemas/VisitanteResponse"
+					},
+					"data": {
+						"type": "string"
+					},
+					"moradorId": {
+						"type": "string"
+					},
+					"createdAt": {
+						"type": "string"
+					},
+					"updatedAt": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"_id",
+					"visitante",
+					"data",
+					"moradorId",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ListaVisitasResponse": {
+				"properties": {
+					"_id": {
+						"type": "string"
+					},
+					"moradorId": {
+						"type": "string"
+					},
+					"visitas": {
+						"items": {
+							"$ref": "#/components/schemas/VisitaResponse"
+						},
+						"type": "array"
+					},
+					"createdAt": {
+						"type": "string"
+					},
+					"updatedAt": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"_id",
+					"moradorId",
+					"visitas",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ErrorResponse": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"error": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"VisitaCreateRequest": {
+				"properties": {
+					"visitante": {
+						"properties": {
+							"descricao": {
+								"type": "string"
+							},
+							"tipo": {
+								"type": "string"
+							},
+							"cpf": {
+								"type": "string"
+							},
+							"nome": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"cpf",
+							"nome"
+						],
+						"type": "object"
+					},
+					"data": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"visitante",
+					"data"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ListaVisitasRequest": {
+				"properties": {
+					"visitas": {
+						"items": {
+							"$ref": "#/components/schemas/VisitaCreateRequest"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"visitas"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ListaVisitantesResponse": {
+				"properties": {
+					"_id": {
+						"type": "string"
+					},
+					"moradorId": {
+						"type": "string"
+					},
+					"registros": {
+						"items": {
+							"$ref": "#/components/schemas/VisitanteResponse"
+						},
+						"type": "array"
+					},
+					"createdAt": {
+						"type": "string"
+					},
+					"updatedAt": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"_id",
+					"moradorId",
+					"registros",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"VisitanteCreateRequest": {
+				"properties": {
+					"nome": {
+						"type": "string"
+					},
+					"cpf": {
+						"type": "string"
+					},
+					"tipo": {
+						"type": "string"
+					},
+					"descricao": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"nome",
+					"cpf"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ListaVisitantesRequest": {
+				"properties": {
+					"registros": {
+						"items": {
+							"$ref": "#/components/schemas/VisitanteCreateRequest"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"registros"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"MoradorResponse": {
+				"properties": {
+					"_id": {
+						"type": "string"
+					},
+					"nome": {
+						"type": "string"
+					},
+					"cpf": {
+						"type": "string"
+					},
+					"telefone": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"bloco": {
+						"type": "string"
+					},
+					"apartamento": {
+						"type": "string"
+					},
+					"createdAt": {
+						"type": "string"
+					},
+					"updatedAt": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"_id",
+					"nome",
+					"cpf",
+					"telefone",
+					"email",
+					"bloco",
+					"apartamento",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"MoradorCreateRequest": {
+				"properties": {
+					"nome": {
+						"type": "string"
+					},
+					"cpf": {
+						"type": "string"
+					},
+					"telefone": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"bloco": {
+						"type": "string"
+					},
+					"apartamento": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"nome",
+					"cpf",
+					"telefone",
+					"email",
+					"bloco",
+					"apartamento"
+				],
+				"type": "object",
+				"additionalProperties": false
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "TCC API",
+		"version": "1.0.0",
+		"description": "API para gerenciamento de moradores, visitantes e visitas",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"paths": {
+		"/visitas": {
+			"get": {
+				"operationId": "GetVisitas",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ListaVisitasResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Lista de visitas não encontrada",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Erro interno do servidor",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Buscar lista de visitas por ID do morador",
+				"tags": [
+					"Visitas"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "moradorId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"post": {
+				"operationId": "CreateOrUpdateVisitas",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ListaVisitasResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Dados inválidos",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Morador não encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Erro interno do servidor",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Inserir/atualizar lista de visitas",
+				"tags": [
+					"Visitas"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "moradorId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ListaVisitasRequest"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteVisita",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Lista de visitas não encontrada",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Erro interno do servidor",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Deletar visita da lista",
+				"tags": [
+					"Visitas"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "moradorId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"visitaId": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"visitaId"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/visitantes": {
+			"get": {
+				"operationId": "GetVisitantes",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ListaVisitantesResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Lista de visitantes não encontrada",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Erro interno do servidor",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Buscar lista de visitantes por ID do morador",
+				"tags": [
+					"Visitantes"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "moradorId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"post": {
+				"operationId": "CreateOrUpdateVisitantes",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ListaVisitantesResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Dados inválidos",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Morador não encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Erro interno do servidor",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Inserir/atualizar lista de visitantes",
+				"tags": [
+					"Visitantes"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "moradorId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ListaVisitantesRequest"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteVisitante",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Lista de visitantes não encontrada",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Erro interno do servidor",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Deletar visitante da lista",
+				"tags": [
+					"Visitantes"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "moradorId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"cpf": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"cpf"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/morador": {
+			"get": {
+				"operationId": "GetMorador",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MoradorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Morador não encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Erro interno do servidor",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Buscar dados do morador por ID",
+				"tags": [
+					"Moradores"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"post": {
+				"operationId": "CreateMorador",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MoradorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Dados inválidos",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Morador já existe",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Erro interno do servidor",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Inserir/cadastrar morador",
+				"tags": [
+					"Moradores"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/MoradorCreateRequest"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteMorador",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Morador não encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Erro interno do servidor",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Deletar morador",
+				"tags": [
+					"Moradores"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "https://localhost:3000/api"
+		}
+	]
+}
