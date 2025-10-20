@@ -1,11 +1,12 @@
-import { Controller, Get, Post, Delete, Route, Query, Body, Tags, Response } from 'tsoa';
+import { Controller, Get, Post, Delete, Route, Query, Body, Tags, Response, Request } from 'tsoa';
 import { Types } from 'mongoose';
 import { Visita } from '../models/Visita';
 import { ListaVisitas } from '../models/ListaVisitas';
 import { Visitante } from '../models/Visitante';
 import { Morador } from '../models/Morador';
-import { ListaVisitasResponse } from '../interfaces/responses';
+import { VisitListResponse } from '../interfaces/responses';
 import { ErrorResponse } from '../interfaces/common';
+import { AuthenticatedRequest } from '../middleware/auth';
 
 interface VisitaCreateRequest {
   visitante: {
@@ -30,15 +31,17 @@ export class VisitasController extends Controller {
    * Buscar lista de visitas por ID do morador
    */
   @Get()
+  @Response<ErrorResponse>(401, 'Unauthorized')
   @Response<ErrorResponse>(404, 'Lista de visitas não encontrada')
   @Response<ErrorResponse>(500, 'Erro interno do servidor')
-  public async getVisitas(@Query() moradorId: string): Promise<ListaVisitasResponse> {
+  public async getVisitas(@Query() moradorId: string, @Request() request: AuthenticatedRequest): Promise<VisitListResponse> {
     try {
-      // Verificar se o morador existe
-      const morador = await Morador.findById(moradorId);
-      if (!morador) {
+      // Check if resident exists
+      const resident = await Morador.findById(moradorId);
+      if (!resident) {
+        console.log(`Get visitas error: Resident not found with ID: ${moradorId}`);
         this.setStatus(404);
-        throw new Error('Morador não encontrado');
+        throw new Error('Resident not found');
       }
 
       let listaVisitas = await ListaVisitas.findOne({
@@ -50,7 +53,7 @@ export class VisitasController extends Controller {
           model: 'Visitante'
         }
       });
-      
+
       if (!listaVisitas) {
         // Criar lista vazia se não existir
         listaVisitas = new ListaVisitas({
@@ -62,20 +65,20 @@ export class VisitasController extends Controller {
 
       return {
         _id: (listaVisitas._id as any).toString(),
-        moradorId: (listaVisitas.moradorId as any).toString(),
-        visitas: (listaVisitas.visitas as any[]).map((visita: any) => ({
+        residentId: (listaVisitas.moradorId as any).toString(),
+        visits: (listaVisitas.visitas as any[]).map((visita: any) => ({
           _id: visita._id.toString(),
-          visitante: {
+          visitor: {
             _id: visita.visitante._id.toString(),
-            nome: visita.visitante.nome,
+            name: visita.visitante.nome,
             cpf: visita.visitante.cpf,
-            tipo: visita.visitante.tipo,
-            descricao: visita.visitante.descricao,
+            type: visita.visitante.tipo,
+            description: visita.visitante.descricao,
             createdAt: visita.visitante.createdAt?.toISOString() || '',
             updatedAt: visita.visitante.updatedAt?.toISOString() || ''
           },
-          data: visita.data,
-          moradorId: (visita.moradorId as any).toString(),
+          date: visita.data,
+          residentId: (visita.moradorId as any).toString(),
           createdAt: visita.createdAt?.toISOString() || '',
           updatedAt: visita.updatedAt?.toISOString() || ''
         })),
@@ -83,12 +86,13 @@ export class VisitasController extends Controller {
         updatedAt: listaVisitas.updatedAt?.toISOString() || ''
       };
     } catch (error) {
-      if (error instanceof Error && error.message === 'Morador não encontrado') {
+      if (error instanceof Error && error.message === 'Resident not found') {
         throw error;
       }
-      
+
+      console.log('Get visitas error - Internal server error:', error);
       this.setStatus(500);
-      throw new Error('Erro interno do servidor');
+      throw new Error('Internal server error');
     }
   }
 
@@ -97,18 +101,21 @@ export class VisitasController extends Controller {
    */
   @Post()
   @Response<ErrorResponse>(400, 'Dados inválidos')
+  @Response<ErrorResponse>(401, 'Unauthorized')
   @Response<ErrorResponse>(404, 'Morador não encontrado')
   @Response<ErrorResponse>(500, 'Erro interno do servidor')
   public async createOrUpdateVisitas(
     @Query() moradorId: string,
-    @Body() requestBody: ListaVisitasRequest
-  ): Promise<ListaVisitasResponse> {
+    @Body() requestBody: ListaVisitasRequest,
+    @Request() request: AuthenticatedRequest
+  ): Promise<VisitListResponse> {
     try {
-      // Verificar se o morador existe
-      const morador = await Morador.findById(moradorId);
-      if (!morador) {
+      // Check if resident exists
+      const resident = await Morador.findById(moradorId);
+      if (!resident) {
+        console.log(`Create/Update visitas error: Resident not found with ID: ${moradorId}`);
         this.setStatus(404);
-        throw new Error('Morador não encontrado');
+        throw new Error('Resident not found');
       }
 
       // Criar ou atualizar visitas
@@ -116,7 +123,7 @@ export class VisitasController extends Controller {
       for (const visitaData of requestBody.visitas) {
         // Verificar se visitante já existe pelo CPF
         let visitante = await Visitante.findOne({ cpf: visitaData.visitante.cpf });
-        
+
         if (!visitante) {
           // Criar novo visitante
           visitante = new Visitante(visitaData.visitante);
@@ -128,7 +135,7 @@ export class VisitasController extends Controller {
           visitante.descricao = visitaData.visitante.descricao;
           await visitante.save();
         }
-        
+
         // Criar nova visita
         const visita = new Visita({
           visitante: visitante._id,
@@ -136,7 +143,7 @@ export class VisitasController extends Controller {
           moradorId: moradorId
         });
         await visita.save();
-        
+
         visitasIds.push(visita._id as Types.ObjectId);
       }
 
@@ -167,20 +174,20 @@ export class VisitasController extends Controller {
       this.setStatus(201);
       return {
         _id: (listaVisitas._id as any).toString(),
-        moradorId: (listaVisitas.moradorId as any).toString(),
-        visitas: (listaVisitas.visitas as any[]).map((visita: any) => ({
+        residentId: (listaVisitas.moradorId as any).toString(),
+        visits: (listaVisitas.visitas as any[]).map((visita: any) => ({
           _id: visita._id.toString(),
-          visitante: {
+          visitor: {
             _id: visita.visitante._id.toString(),
-            nome: visita.visitante.nome,
+            name: visita.visitante.nome,
             cpf: visita.visitante.cpf,
-            tipo: visita.visitante.tipo,
-            descricao: visita.visitante.descricao,
+            type: visita.visitante.tipo,
+            description: visita.visitante.descricao,
             createdAt: visita.visitante.createdAt?.toISOString() || '',
             updatedAt: visita.visitante.updatedAt?.toISOString() || ''
           },
-          data: visita.data,
-          moradorId: (visita.moradorId as any).toString(),
+          date: visita.data,
+          residentId: (visita.moradorId as any).toString(),
           createdAt: visita.createdAt?.toISOString() || '',
           updatedAt: visita.updatedAt?.toISOString() || ''
         })),
@@ -188,12 +195,13 @@ export class VisitasController extends Controller {
         updatedAt: listaVisitas.updatedAt?.toISOString() || ''
       };
     } catch (error) {
-      if (error instanceof Error && error.message === 'Morador não encontrado') {
+      if (error instanceof Error && error.message === 'Resident not found') {
         throw error;
       }
-      
+
+      console.log('Create/Update visitas error - Internal server error:', error);
       this.setStatus(500);
-      throw new Error('Erro interno do servidor');
+      throw new Error('Internal server error');
     }
   }
 
@@ -201,31 +209,36 @@ export class VisitasController extends Controller {
    * Deletar visita da lista
    */
   @Delete()
+  @Response<ErrorResponse>(401, 'Unauthorized')
   @Response<ErrorResponse>(404, 'Lista de visitas não encontrada')
   @Response<ErrorResponse>(500, 'Erro interno do servidor')
   public async deleteVisita(
     @Query() moradorId: string,
-    @Body() requestBody: { visitaId: string }
+    @Body() requestBody: { visitaId: string },
+    @Request() request: AuthenticatedRequest
   ): Promise<{ message: string }> {
     try {
-      // Verificar se o morador existe
-      const morador = await Morador.findById(moradorId);
-      if (!morador) {
+      // Check if resident exists
+      const resident = await Morador.findById(moradorId);
+      if (!resident) {
+        console.log(`Delete visita error: Resident not found with ID: ${moradorId}`);
         this.setStatus(404);
-        throw new Error('Morador não encontrado');
+        throw new Error('Resident not found');
       }
 
       // Buscar visita pelo ID
       const visita = await Visita.findById(requestBody.visitaId);
       if (!visita) {
+        console.log(`Delete visita error: Visit not found with ID: ${requestBody.visitaId}`);
         this.setStatus(404);
-        throw new Error('Visita não encontrada');
+        throw new Error('Visit not found');
       }
 
       // Verificar se a visita pertence ao morador
       if (!(visita.moradorId as Types.ObjectId).equals(moradorId)) {
+        console.log(`Delete visita error: Access denied - Visit ${requestBody.visitaId} does not belong to resident ${moradorId}`);
         this.setStatus(403);
-        throw new Error('Acesso negado');
+        throw new Error('Access denied');
       }
 
       // Remover visita da lista
@@ -243,18 +256,19 @@ export class VisitasController extends Controller {
       // Deletar a visita
       await Visita.findByIdAndDelete(visita._id);
 
-      return { message: 'Visita deletada com sucesso' };
+      return { message: 'Visit deleted successfully' };
     } catch (error) {
       if (error instanceof Error && (
-        error.message === 'Morador não encontrado' ||
-        error.message === 'Visita não encontrada' ||
-        error.message === 'Acesso negado'
+        error.message === 'Resident not found' ||
+        error.message === 'Visit not found' ||
+        error.message === 'Access denied'
       )) {
         throw error;
       }
-      
+
+      console.log('Delete visita error - Internal server error:', error);
       this.setStatus(500);
-      throw new Error('Erro interno do servidor');
+      throw new Error('Internal server error');
     }
   }
 }

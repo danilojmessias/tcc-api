@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Delete, Route, Query, Body, Tags, Response } from 'tsoa';
+import { Controller, Get, Post, Delete, Route, Query, Body, Tags, Response, Request } from 'tsoa';
 import { Types } from 'mongoose';
 import { Visitante } from '../models/Visitante';
 import { ListaVisitantes } from '../models/ListaVisitantes';
 import { Morador } from '../models/Morador';
-import { ListaVisitantesResponse } from '../interfaces/responses';
+import { VisitorListResponse } from '../interfaces/responses';
 import { ErrorResponse } from '../interfaces/common';
+import { AuthenticatedRequest } from '../middleware/auth';
 
 interface VisitanteCreateRequest {
   nome: string;
@@ -26,21 +27,23 @@ export class VisitantesController extends Controller {
    * Buscar lista de visitantes por ID do morador
    */
   @Get()
+  @Response<ErrorResponse>(401, 'Unauthorized')
   @Response<ErrorResponse>(404, 'Lista de visitantes não encontrada')
   @Response<ErrorResponse>(500, 'Erro interno do servidor')
-  public async getVisitantes(@Query() moradorId: string): Promise<ListaVisitantesResponse> {
+  public async getVisitantes(@Query() moradorId: string, @Request() request: AuthenticatedRequest): Promise<VisitorListResponse> {
     try {
-      // Verificar se o morador existe
-      const morador = await Morador.findById(moradorId);
-      if (!morador) {
+      // Check if resident exists
+      const resident = await Morador.findById(moradorId);
+      if (!resident) {
+        console.log(`Get visitantes error: Resident not found with ID: ${moradorId}`);
         this.setStatus(404);
-        throw new Error('Morador não encontrado');
+        throw new Error('Resident not found');
       }
 
       let listaVisitantes = await ListaVisitantes.findOne({
         moradorId: moradorId
       }).populate('registros');
-      
+
       if (!listaVisitantes) {
         // Criar lista vazia se não existir
         listaVisitantes = new ListaVisitantes({
@@ -52,13 +55,13 @@ export class VisitantesController extends Controller {
 
       return {
         _id: (listaVisitantes._id as any).toString(),
-        moradorId: (listaVisitantes.moradorId as any).toString(),
-        registros: (listaVisitantes.registros as any[]).map((visitante: any) => ({
+        residentId: (listaVisitantes.moradorId as any).toString(),
+        records: (listaVisitantes.registros as any[]).map((visitante: any) => ({
           _id: visitante._id.toString(),
-          nome: visitante.nome,
+          name: visitante.nome,
           cpf: visitante.cpf,
-          tipo: visitante.tipo,
-          descricao: visitante.descricao,
+          type: visitante.tipo,
+          description: visitante.descricao,
           createdAt: visitante.createdAt?.toISOString() || '',
           updatedAt: visitante.updatedAt?.toISOString() || ''
         })),
@@ -66,12 +69,13 @@ export class VisitantesController extends Controller {
         updatedAt: listaVisitantes.updatedAt?.toISOString() || ''
       };
     } catch (error) {
-      if (error instanceof Error && error.message === 'Morador não encontrado') {
+      if (error instanceof Error && error.message === 'Resident not found') {
         throw error;
       }
-      
+
+      console.log('Get visitantes error - Internal server error:', error);
       this.setStatus(500);
-      throw new Error('Erro interno do servidor');
+      throw new Error('Internal server error');
     }
   }
 
@@ -80,18 +84,21 @@ export class VisitantesController extends Controller {
    */
   @Post()
   @Response<ErrorResponse>(400, 'Dados inválidos')
+  @Response<ErrorResponse>(401, 'Unauthorized')
   @Response<ErrorResponse>(404, 'Morador não encontrado')
   @Response<ErrorResponse>(500, 'Erro interno do servidor')
   public async createOrUpdateVisitantes(
     @Query() moradorId: string,
-    @Body() requestBody: ListaVisitantesRequest
-  ): Promise<ListaVisitantesResponse> {
+    @Body() requestBody: ListaVisitantesRequest,
+    @Request() request: AuthenticatedRequest
+  ): Promise<VisitorListResponse> {
     try {
-      // Verificar se o morador existe
-      const morador = await Morador.findById(moradorId);
-      if (!morador) {
+      // Check if resident exists
+      const resident = await Morador.findById(moradorId);
+      if (!resident) {
+        console.log(`Create/Update visitantes error: Resident not found with ID: ${moradorId}`);
         this.setStatus(404);
-        throw new Error('Morador não encontrado');
+        throw new Error('Resident not found');
       }
 
       // Criar ou atualizar visitantes
@@ -99,7 +106,7 @@ export class VisitantesController extends Controller {
       for (const visitanteData of requestBody.registros) {
         // Verificar se visitante já existe pelo CPF
         let visitante = await Visitante.findOne({ cpf: visitanteData.cpf });
-        
+
         if (!visitante) {
           // Criar novo visitante
           visitante = new Visitante(visitanteData);
@@ -111,7 +118,7 @@ export class VisitantesController extends Controller {
           visitante.descricao = visitanteData.descricao;
           await visitante.save();
         }
-        
+
         visitantesIds.push(visitante._id as Types.ObjectId);
       }
 
@@ -135,13 +142,13 @@ export class VisitantesController extends Controller {
       this.setStatus(201);
       return {
         _id: (listaVisitantes._id as any).toString(),
-        moradorId: (listaVisitantes.moradorId as any).toString(),
-        registros: (listaVisitantes.registros as any[]).map((visitante: any) => ({
+        residentId: (listaVisitantes.moradorId as any).toString(),
+        records: (listaVisitantes.registros as any[]).map((visitante: any) => ({
           _id: visitante._id.toString(),
-          nome: visitante.nome,
+          name: visitante.nome,
           cpf: visitante.cpf,
-          tipo: visitante.tipo,
-          descricao: visitante.descricao,
+          type: visitante.tipo,
+          description: visitante.descricao,
           createdAt: visitante.createdAt?.toISOString() || '',
           updatedAt: visitante.updatedAt?.toISOString() || ''
         })),
@@ -149,12 +156,13 @@ export class VisitantesController extends Controller {
         updatedAt: listaVisitantes.updatedAt?.toISOString() || ''
       };
     } catch (error) {
-      if (error instanceof Error && error.message === 'Morador não encontrado') {
+      if (error instanceof Error && error.message === 'Resident not found') {
         throw error;
       }
-      
+
+      console.log('Create/Update visitantes error - Internal server error:', error);
       this.setStatus(500);
-      throw new Error('Erro interno do servidor');
+      throw new Error('Internal server error');
     }
   }
 
@@ -162,25 +170,29 @@ export class VisitantesController extends Controller {
    * Deletar visitante da lista
    */
   @Delete()
+  @Response<ErrorResponse>(401, 'Unauthorized')
   @Response<ErrorResponse>(404, 'Lista de visitantes não encontrada')
   @Response<ErrorResponse>(500, 'Erro interno do servidor')
   public async deleteVisitante(
     @Query() moradorId: string,
-    @Body() requestBody: { cpf: string }
+    @Body() requestBody: { cpf: string },
+    @Request() request: AuthenticatedRequest
   ): Promise<{ message: string }> {
     try {
-      // Verificar se o morador existe
-      const morador = await Morador.findById(moradorId);
-      if (!morador) {
+      // Check if resident exists
+      const resident = await Morador.findById(moradorId);
+      if (!resident) {
+        console.log(`Delete visitante error: Resident not found with ID: ${moradorId}`);
         this.setStatus(404);
-        throw new Error('Morador não encontrado');
+        throw new Error('Resident not found');
       }
 
       // Buscar visitante pelo CPF
       const visitante = await Visitante.findOne({ cpf: requestBody.cpf });
       if (!visitante) {
+        console.log(`Delete visitante error: Visitor not found with CPF: ${requestBody.cpf}`);
         this.setStatus(404);
-        throw new Error('Visitante não encontrado');
+        throw new Error('Visitor not found');
       }
 
       // Remover visitante da lista
@@ -198,17 +210,18 @@ export class VisitantesController extends Controller {
       // Deletar o visitante
       await Visitante.findByIdAndDelete(visitante._id);
 
-      return { message: 'Visitante deletado com sucesso' };
+      return { message: 'Visitor deleted successfully' };
     } catch (error) {
       if (error instanceof Error && (
-        error.message === 'Morador não encontrado' ||
-        error.message === 'Visitante não encontrado'
+        error.message === 'Resident not found' ||
+        error.message === 'Visitor not found'
       )) {
         throw error;
       }
-      
+
+      console.log('Delete visitante error - Internal server error:', error);
       this.setStatus(500);
-      throw new Error('Erro interno do servidor');
+      throw new Error('Internal server error');
     }
   }
 }

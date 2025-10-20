@@ -1,48 +1,48 @@
 
 
-export interface MoradorResponse {
+export interface ResidentResponse {
   _id: string;
-  nome: string;
-  cpf: string;
-  telefone: string;
+  name?: string;
+  cpf?: string;
+  phone?: string;
   email: string;
-  bloco: string;
-  apartamento: string;
+  block?: string;
+  apartment?: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface VisitanteResponse {
+export interface VisitorResponse {
   _id: string;
-  nome: string;
+  name: string;
   cpf: string;
-  tipo?: string;
-  descricao?: string;
+  type?: string;
+  description?: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface VisitaResponse {
+export interface VisitResponse {
   _id: string;
-  visitante: VisitanteResponse;
-  data: string;
-  moradorId: string;
+  visitor: VisitorResponse;
+  date: string;
+  residentId: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface ListaVisitantesResponse {
+export interface VisitorListResponse {
   _id: string;
-  moradorId: string;
-  registros: VisitanteResponse[];
+  residentId: string;
+  records: VisitorResponse[];
   createdAt: string;
   updatedAt: string;
 }
 
-export interface ListaVisitasResponse {
+export interface VisitListResponse {
   _id: string;
-  moradorId: string;
-  visitas: VisitaResponse[];
+  residentId: string;
+  visits: VisitResponse[];
   createdAt: string;
   updatedAt: string;
 }

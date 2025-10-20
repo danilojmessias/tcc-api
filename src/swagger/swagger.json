@@ -7,21 +7,21 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"VisitanteResponse": {
+			"VisitorResponse": {
 				"properties": {
 					"_id": {
 						"type": "string"
 					},
-					"nome": {
+					"name": {
 						"type": "string"
 					},
 					"cpf": {
 						"type": "string"
 					},
-					"tipo": {
+					"type": {
 						"type": "string"
 					},
-					"descricao": {
+					"description": {
 						"type": "string"
 					},
 					"createdAt": {
@@ -33,7 +33,7 @@
 				},
 				"required": [
 					"_id",
-					"nome",
+					"name",
 					"cpf",
 					"createdAt",
 					"updatedAt"
@@ -41,18 +41,18 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"VisitaResponse": {
+			"VisitResponse": {
 				"properties": {
 					"_id": {
 						"type": "string"
 					},
-					"visitante": {
-						"$ref": "#/components/schemas/VisitanteResponse"
+					"visitor": {
+						"$ref": "#/components/schemas/VisitorResponse"
 					},
-					"data": {
+					"date": {
 						"type": "string"
 					},
-					"moradorId": {
+					"residentId": {
 						"type": "string"
 					},
 					"createdAt": {
@@ -64,26 +64,26 @@
 				},
 				"required": [
 					"_id",
-					"visitante",
-					"data",
-					"moradorId",
+					"visitor",
+					"date",
+					"residentId",
 					"createdAt",
 					"updatedAt"
 				],
 				"type": "object",
 				"additionalProperties": false
 			},
-			"ListaVisitasResponse": {
+			"VisitListResponse": {
 				"properties": {
 					"_id": {
 						"type": "string"
 					},
-					"moradorId": {
+					"residentId": {
 						"type": "string"
 					},
-					"visitas": {
+					"visits": {
 						"items": {
-							"$ref": "#/components/schemas/VisitaResponse"
+							"$ref": "#/components/schemas/VisitResponse"
 						},
 						"type": "array"
 					},
@@ -96,8 +96,8 @@
 				},
 				"required": [
 					"_id",
-					"moradorId",
-					"visitas",
+					"residentId",
+					"visits",
 					"createdAt",
 					"updatedAt"
 				],
@@ -168,17 +168,17 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"ListaVisitantesResponse": {
+			"VisitorListResponse": {
 				"properties": {
 					"_id": {
 						"type": "string"
 					},
-					"moradorId": {
+					"residentId": {
 						"type": "string"
 					},
-					"registros": {
+					"records": {
 						"items": {
-							"$ref": "#/components/schemas/VisitanteResponse"
+							"$ref": "#/components/schemas/VisitorResponse"
 						},
 						"type": "array"
 					},
@@ -191,8 +191,8 @@
 				},
 				"required": [
 					"_id",
-					"moradorId",
-					"registros",
+					"residentId",
+					"records",
 					"createdAt",
 					"updatedAt"
 				],
@@ -236,27 +236,27 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"MoradorResponse": {
+			"ResidentResponse": {
 				"properties": {
 					"_id": {
 						"type": "string"
 					},
-					"nome": {
+					"name": {
 						"type": "string"
 					},
 					"cpf": {
 						"type": "string"
 					},
-					"telefone": {
+					"phone": {
 						"type": "string"
 					},
 					"email": {
 						"type": "string"
 					},
-					"bloco": {
+					"block": {
 						"type": "string"
 					},
-					"apartamento": {
+					"apartment": {
 						"type": "string"
 					},
 					"createdAt": {
@@ -268,46 +268,193 @@
 				},
 				"required": [
 					"_id",
-					"nome",
-					"cpf",
-					"telefone",
 					"email",
-					"bloco",
-					"apartamento",
 					"createdAt",
 					"updatedAt"
 				],
 				"type": "object",
 				"additionalProperties": false
 			},
-			"MoradorCreateRequest": {
+			"ResidentCreateRequest": {
 				"properties": {
-					"nome": {
+					"name": {
 						"type": "string"
 					},
 					"cpf": {
 						"type": "string"
 					},
-					"telefone": {
+					"phone": {
 						"type": "string"
 					},
 					"email": {
 						"type": "string"
 					},
-					"bloco": {
+					"password": {
 						"type": "string"
 					},
-					"apartamento": {
+					"block": {
+						"type": "string"
+					},
+					"apartment": {
 						"type": "string"
 					}
 				},
 				"required": [
-					"nome",
-					"cpf",
-					"telefone",
 					"email",
-					"bloco",
-					"apartamento"
+					"password"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AuthResponse": {
+				"properties": {
+					"resident": {
+						"properties": {
+							"email": {
+								"type": "string"
+							},
+							"_id": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"email",
+							"_id"
+						],
+						"type": "object"
+					},
+					"token": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"resident",
+					"token"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"LoginRequest": {
+				"properties": {
+					"email": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"email",
+					"password"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"RegisterRequest": {
+				"properties": {
+					"email": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"email",
+					"password"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UserListResponse": {
+				"properties": {
+					"users": {
+						"items": {
+							"properties": {
+								"createdAt": {
+									"type": "string"
+								},
+								"apartment": {
+									"type": "string"
+								},
+								"block": {
+									"type": "string"
+								},
+								"phone": {
+									"type": "string"
+								},
+								"cpf": {
+									"type": "string"
+								},
+								"name": {
+									"type": "string"
+								},
+								"email": {
+									"type": "string"
+								},
+								"_id": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"createdAt",
+								"email",
+								"_id"
+							],
+							"type": "object"
+						},
+						"type": "array"
+					},
+					"total": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"users",
+					"total"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"LogoutResponse": {
+				"properties": {
+					"message": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"TokenValidationResponse": {
+				"properties": {
+					"valid": {
+						"type": "boolean"
+					},
+					"resident": {
+						"properties": {
+							"email": {
+								"type": "string"
+							},
+							"_id": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"email",
+							"_id"
+						],
+						"type": "object"
+					},
+					"message": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"valid"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -334,7 +481,17 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/ListaVisitasResponse"
+									"$ref": "#/components/schemas/VisitListResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
 								}
 							}
 						}
@@ -384,13 +541,23 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/ListaVisitasResponse"
+									"$ref": "#/components/schemas/VisitListResponse"
 								}
 							}
 						}
 					},
 					"400": {
 						"description": "Dados inválidos",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -467,6 +634,16 @@
 							}
 						}
 					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
 					"404": {
 						"description": "Lista de visitas não encontrada",
 						"content": {
@@ -532,7 +709,17 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/ListaVisitantesResponse"
+									"$ref": "#/components/schemas/VisitorListResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
 								}
 							}
 						}
@@ -582,13 +769,23 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/ListaVisitantesResponse"
+									"$ref": "#/components/schemas/VisitorListResponse"
 								}
 							}
 						}
 					},
 					"400": {
 						"description": "Dados inválidos",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -665,6 +862,16 @@
 							}
 						}
 					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
 					"404": {
 						"description": "Lista de visitantes não encontrada",
 						"content": {
@@ -721,22 +928,32 @@
 				}
 			}
 		},
-		"/morador": {
+		"/resident": {
 			"get": {
-				"operationId": "GetMorador",
+				"operationId": "GetResident",
 				"responses": {
 					"200": {
 						"description": "Ok",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/MoradorResponse"
+									"$ref": "#/components/schemas/ResidentResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
 								}
 							}
 						}
 					},
 					"404": {
-						"description": "Morador não encontrado",
+						"description": "Resident not found",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -746,7 +963,7 @@
 						}
 					},
 					"500": {
-						"description": "Erro interno do servidor",
+						"description": "Internal server error",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -756,9 +973,9 @@
 						}
 					}
 				},
-				"description": "Buscar dados do morador por ID",
+				"description": "Get resident data by ID",
 				"tags": [
-					"Moradores"
+					"Residents"
 				],
 				"security": [],
 				"parameters": [
@@ -773,20 +990,20 @@
 				]
 			},
 			"post": {
-				"operationId": "CreateMorador",
+				"operationId": "CreateResident",
 				"responses": {
 					"200": {
 						"description": "Ok",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/MoradorResponse"
+									"$ref": "#/components/schemas/ResidentResponse"
 								}
 							}
 						}
 					},
 					"400": {
-						"description": "Dados inválidos",
+						"description": "Invalid data",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -796,7 +1013,7 @@
 						}
 					},
 					"409": {
-						"description": "Morador já existe",
+						"description": "Resident already exists",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -806,7 +1023,7 @@
 						}
 					},
 					"500": {
-						"description": "Erro interno do servidor",
+						"description": "Internal server error",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -816,9 +1033,9 @@
 						}
 					}
 				},
-				"description": "Inserir/cadastrar morador",
+				"description": "Create/register resident",
 				"tags": [
-					"Moradores"
+					"Residents"
 				],
 				"security": [],
 				"parameters": [],
@@ -827,14 +1044,14 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/MoradorCreateRequest"
+								"$ref": "#/components/schemas/ResidentCreateRequest"
 							}
 						}
 					}
 				}
 			},
 			"delete": {
-				"operationId": "DeleteMorador",
+				"operationId": "DeleteResident",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -854,8 +1071,18 @@
 							}
 						}
 					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
 					"404": {
-						"description": "Morador não encontrado",
+						"description": "Resident not found",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -865,7 +1092,7 @@
 						}
 					},
 					"500": {
-						"description": "Erro interno do servidor",
+						"description": "Internal server error",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -875,9 +1102,9 @@
 						}
 					}
 				},
-				"description": "Deletar morador",
+				"description": "Delete resident",
 				"tags": [
-					"Moradores"
+					"Residents"
 				],
 				"security": [],
 				"parameters": [
@@ -890,6 +1117,261 @@
 						}
 					}
 				]
+			}
+		},
+		"/auth/login": {
+			"post": {
+				"operationId": "Login",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AuthResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid data",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Invalid credentials",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Resident login",
+				"tags": [
+					"Authentication"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/LoginRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/register": {
+			"post": {
+				"operationId": "Register",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AuthResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid data",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Resident already exists",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Register new resident",
+				"tags": [
+					"Authentication"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/RegisterRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/users": {
+			"get": {
+				"operationId": "ListUsers",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UserListResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "List all users created for login",
+				"tags": [
+					"Authentication"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/auth/logout": {
+			"post": {
+				"operationId": "Logout",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/LogoutResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Logout user and invalidate token",
+				"tags": [
+					"Authentication"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/auth/verify-token": {
+			"post": {
+				"operationId": "VerifyToken",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TokenValidationResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Invalid or expired token",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Verify token validity for automatic login",
+				"tags": [
+					"Authentication"
+				],
+				"security": [],
+				"parameters": []
 			}
 		}
 	},

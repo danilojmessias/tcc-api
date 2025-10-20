@@ -4,8 +4,10 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
 import dotenv from 'dotenv';
+import rateLimit from 'express-rate-limit';
 import { connectDatabase } from './config/database';
 import { RegisterRoutes } from './routes/routes';
+import { authenticateToken } from './middleware/auth';
 
 // Load environment variables
 dotenv.config();
@@ -16,8 +18,8 @@ class App {
 
   constructor() {
     this.app = express();
-    this.port = process.env.PORT || 3000;
-    
+    this.port = process.env.PORT || 3001;
+
     this.initializeMiddlewares();
     this.initializeRoutes();
     this.initializeSwagger();
@@ -31,7 +33,36 @@ class App {
       crossOriginEmbedderPolicy: false,
       crossOriginResourcePolicy: false
     }));
-    
+
+    // Rate limiting disabled - no attempt limits
+    // const authLimiter = rateLimit({
+    //   windowMs: 15 * 60 * 1000, // 15 minutes
+    //   max: 5, // limit each IP to 5 requests per windowMs
+    //   message: {
+    //     error: 'Muitas tentativas de login. Tente novamente em 15 minutos.',
+    //     retryAfter: 15 * 60
+    //   },
+    //   standardHeaders: true,
+    //   legacyHeaders: false,
+    // });
+
+    // Apply rate limiting to auth routes - DISABLED
+    // this.app.use('/api/auth', authLimiter);
+
+    // General rate limiting - DISABLED
+    // const generalLimiter = rateLimit({
+    //   windowMs: 15 * 60 * 1000, // 15 minutes
+    //   max: 100, // limit each IP to 100 requests per windowMs
+    //   message: {
+    //     error: 'Muitas requisições. Tente novamente em 15 minutos.',
+    //     retryAfter: 15 * 60
+    //   },
+    //   standardHeaders: true,
+    //   legacyHeaders: false,
+    // });
+
+    // this.app.use('/api', generalLimiter);
+
     // CORS middleware
     this.app.use(cors({
       origin: process.env.CORS_ORIGIN || '*',
@@ -60,16 +91,23 @@ class App {
 
     // Create API router
     const apiRouter = express.Router();
-    
+
     // API routes logging middleware
     apiRouter.use((req: Request, res: Response, next: NextFunction) => {
       console.log(`${req.method} ${req.path} - ${new Date().toISOString()}`);
       next();
     });
 
+    // Add authentication middleware for protected routes
+    apiRouter.use('/auth/users', authenticateToken);
+    apiRouter.use('/auth/logout', authenticateToken);
+    apiRouter.use('/resident', authenticateToken);
+    apiRouter.use('/visitantes', authenticateToken);
+    apiRouter.use('/visitas', authenticateToken);
+
     // Register TSOA routes to the API router
     RegisterRoutes(apiRouter);
-    
+
     // Mount the API router with /api prefix
     this.app.use('/api', apiRouter);
   }
@@ -78,13 +116,13 @@ class App {
     try {
       // Import swagger spec
       const swaggerDocument = require('./swagger/swagger.json');
-      
+
       // Corrigir a URL do servidor dinamicamente para usar HTTP
       swaggerDocument.servers = [{
         url: `http://localhost:${this.port}/api`,
         description: 'Development server'
       }];
-      
+
       this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
         explorer: true,
         customCss: '.swagger-ui .topbar { display: none }',
