@@ -1,7 +1,7 @@
 
 # Casos de Teste - API TCC (Gherkin)
 
-Este documento contém casos de teste escritos em Gherkin para a API de gerenciamento de moradores, visitantes e visitas.
+Este documento contém casos de teste escritos em Gherkin para a API de gerenciamento de residentes, visitantes e visitas.
 
 ## Estrutura da API
 
@@ -9,7 +9,7 @@ Este documento contém casos de teste escritos em Gherkin para a API de gerencia
 - **Endpoints principais**: 
   - `/visitas` - Gerenciamento de visitas
   - `/visitantes` - Gerenciamento de visitantes
-  - `/resident` - Gerenciamento de moradores
+  - `/resident` - Gerenciamento de residentes
   - `/auth/login` e `/auth/register` - Autenticação
 
 ---
@@ -18,18 +18,18 @@ Este documento contém casos de teste escritos em Gherkin para a API de gerencia
 
 ### Cenário 1.1: Login com credenciais válidas
 ```gherkin
-Feature: Autenticação de morador
-  Como um morador registrado
+Feature: Autenticação de resident
+  Como um resident registrado
   Quero fazer login no sistema
   Para acessar minhas funcionalidades
 
 Scenario: Login bem-sucedido com credenciais válidas
-  Given que existe um morador cadastrado com email "morador@teste.com" e senha "123456"
+  Given que existe um resident cadastrado com email "resident@teste.com" e senha "123456"
   When eu envio uma requisição POST para "/auth/login"
   And o corpo da requisição contém:
     """
     {
-      "email": "morador@teste.com",
+      "email": "resident@teste.com",
       "password": "123456"
     }
     """
@@ -38,7 +38,7 @@ Scenario: Login bem-sucedido com credenciais válidas
     """
     {
       "resident": {
-        "email": "morador@teste.com",
+        "email": "resident@teste.com",
         "_id": "<string>"
       }
     }
@@ -48,12 +48,12 @@ Scenario: Login bem-sucedido com credenciais válidas
 ### Cenário 1.2: Login com credenciais inválidas
 ```gherkin
 Scenario: Login com senha incorreta
-  Given que existe um morador cadastrado com email "morador@teste.com"
+  Given que existe um resident cadastrado com email "resident@teste.com"
   When eu envio uma requisição POST para "/auth/login"
   And o corpo da requisição contém:
     """
     {
-      "email": "morador@teste.com",
+      "email": "resident@teste.com",
       "password": "senhaerrada"
     }
     """
@@ -76,15 +76,15 @@ Scenario: Login com email em formato inválido
   And a resposta deve conter uma mensagem de erro "Invalid data"
 ```
 
-### Cenário 1.4: Registro de novo morador
+### Cenário 1.4: Registro de novo resident
 ```gherkin
-Scenario: Registro bem-sucedido de novo morador
-  Given que não existe um morador com email "novomorador@teste.com"
+Scenario: Registro bem-sucedido de novo resident
+  Given que não existe um resident com email "novoresident@teste.com"
   When eu envio uma requisição POST para "/auth/register"
   And o corpo da requisição contém:
     """
     {
-      "email": "novomorador@teste.com",
+      "email": "novoresident@teste.com",
       "password": "123456"
     }
     """
@@ -93,7 +93,7 @@ Scenario: Registro bem-sucedido de novo morador
     """
     {
       "resident": {
-        "email": "novomorador@teste.com",
+        "email": "novoresident@teste.com",
         "_id": "<string>"
       }
     }
@@ -103,12 +103,12 @@ Scenario: Registro bem-sucedido de novo morador
 ### Cenário 1.5: Registro com email já existente
 ```gherkin
 Scenario: Tentativa de registro com email já cadastrado
-  Given que já existe um morador com email "morador@teste.com"
+  Given que já existe um resident com email "resident@teste.com"
   When eu envio uma requisição POST para "/auth/register"
   And o corpo da requisição contém:
     """
     {
-      "email": "morador@teste.com",
+      "email": "resident@teste.com",
       "password": "123456"
     }
     """
@@ -120,19 +120,19 @@ Scenario: Tentativa de registro com email já cadastrado
 
 ## 2. CASOS DE TESTE - MORADORES
 
-### Cenário 2.1: Buscar morador por ID
+### Cenário 2.1: Buscar resident por ID
 ```gherkin
-Feature: Gerenciamento de moradores
+Feature: Gerenciamento de residentes
   Como um sistema
-  Quero gerenciar dados de moradores
+  Quero gerenciar dados de residentes
   Para manter informações atualizadas
 
-Scenario: Buscar morador existente por ID
-  Given que existe um morador com ID "507f1f77bcf86cd799439011"
+Scenario: Buscar resident existente por ID
+  Given que existe um resident com ID "507f1f77bcf86cd799439011"
   When eu envio uma requisição GET para "/resident"
   And o parâmetro "id" é "507f1f77bcf86cd799439011"
   Then o status da resposta deve ser 200
-  And a resposta deve conter os dados do morador:
+  And a resposta deve conter os dados do resident:
     """
     {
       "_id": "507f1f77bcf86cd799439011",
@@ -143,19 +143,19 @@ Scenario: Buscar morador existente por ID
     """
 ```
 
-### Cenário 2.2: Buscar morador inexistente
+### Cenário 2.2: Buscar resident inexistente
 ```gherkin
-Scenario: Buscar morador que não existe
-  Given que não existe um morador com ID "507f1f77bcf86cd799439999"
+Scenario: Buscar resident que não existe
+  Given que não existe um resident com ID "507f1f77bcf86cd799439999"
   When eu envio uma requisição GET para "/resident"
   And o parâmetro "id" é "507f1f77bcf86cd799439999"
   Then o status da resposta deve ser 404
   And a resposta deve conter uma mensagem de erro "Resident not found"
 ```
 
-### Cenário 2.3: Criar novo morador
+### Cenário 2.3: Criar novo resident
 ```gherkin
-Scenario: Criar morador com dados completos
+Scenario: Criar resident com dados completos
   When eu envio uma requisição POST para "/resident"
   And o corpo da requisição contém:
     """
@@ -170,12 +170,12 @@ Scenario: Criar morador com dados completos
     }
     """
   Then o status da resposta deve ser 200
-  And a resposta deve conter os dados do morador criado
+  And a resposta deve conter os dados do resident criado
 ```
 
-### Cenário 2.4: Criar morador com dados mínimos
+### Cenário 2.4: Criar resident com dados mínimos
 ```gherkin
-Scenario: Criar morador apenas com campos obrigatórios
+Scenario: Criar resident apenas com campos obrigatórios
   When eu envio uma requisição POST para "/resident"
   And o corpo da requisição contém:
     """
@@ -185,13 +185,13 @@ Scenario: Criar morador apenas com campos obrigatórios
     }
     """
   Then o status da resposta deve ser 200
-  And a resposta deve conter os dados do morador criado
+  And a resposta deve conter os dados do resident criado
 ```
 
-### Cenário 2.5: Deletar morador existente
+### Cenário 2.5: Deletar resident existente
 ```gherkin
-Scenario: Deletar morador com sucesso
-  Given que existe um morador com ID "507f1f77bcf86cd799439011"
+Scenario: Deletar resident com sucesso
+  Given que existe um resident com ID "507f1f77bcf86cd799439011"
   When eu envio uma requisição DELETE para "/resident"
   And o parâmetro "id" é "507f1f77bcf86cd799439011"
   Then o status da resposta deve ser 200
@@ -205,15 +205,15 @@ Scenario: Deletar morador com sucesso
 ### Cenário 3.1: Buscar lista de visitantes
 ```gherkin
 Feature: Gerenciamento de visitantes
-  Como um morador
+  Como um resident
   Quero gerenciar minha lista de visitantes
   Para controlar quem pode me visitar
 
 Scenario: Buscar lista de visitantes existente
-  Given que existe um morador com ID "507f1f77bcf86cd799439011"
-  And o morador possui uma lista de visitantes cadastrada
+  Given que existe um resident com ID "507f1f77bcf86cd799439011"
+  And o resident possui uma lista de visitantes cadastrada
   When eu envio uma requisição GET para "/visitantes"
-  And o parâmetro "moradorId" é "507f1f77bcf86cd799439011"
+  And o parâmetro "residentId" é "507f1f77bcf86cd799439011"
   Then o status da resposta deve ser 200
   And a resposta deve conter:
     """
@@ -238,9 +238,9 @@ Scenario: Buscar lista de visitantes existente
 ### Cenário 3.2: Buscar lista de visitantes inexistente
 ```gherkin
 Scenario: Buscar lista de visitantes que não existe
-  Given que não existe lista de visitantes para o morador "507f1f77bcf86cd799439999"
+  Given que não existe lista de visitantes para o resident "507f1f77bcf86cd799439999"
   When eu envio uma requisição GET para "/visitantes"
-  And o parâmetro "moradorId" é "507f1f77bcf86cd799439999"
+  And o parâmetro "residentId" é "507f1f77bcf86cd799439999"
   Then o status da resposta deve ser 404
   And a resposta deve conter uma mensagem de erro "Lista de visitantes não encontrada"
 ```
@@ -248,9 +248,9 @@ Scenario: Buscar lista de visitantes que não existe
 ### Cenário 3.3: Criar/atualizar lista de visitantes
 ```gherkin
 Scenario: Criar nova lista de visitantes
-  Given que existe um morador com ID "507f1f77bcf86cd799439011"
+  Given que existe um resident com ID "507f1f77bcf86cd799439011"
   When eu envio uma requisição POST para "/visitantes"
-  And o parâmetro "moradorId" é "507f1f77bcf86cd799439011"
+  And o parâmetro "residentId" é "507f1f77bcf86cd799439011"
   And o corpo da requisição contém:
     """
     {
@@ -275,9 +275,9 @@ Scenario: Criar nova lista de visitantes
 ### Cenário 3.4: Criar visitante com dados inválidos
 ```gherkin
 Scenario: Tentar criar visitante sem campos obrigatórios
-  Given que existe um morador com ID "507f1f77bcf86cd799439011"
+  Given que existe um resident com ID "507f1f77bcf86cd799439011"
   When eu envio uma requisição POST para "/visitantes"
-  And o parâmetro "moradorId" é "507f1f77bcf86cd799439011"
+  And o parâmetro "residentId" é "507f1f77bcf86cd799439011"
   And o corpo da requisição contém:
     """
     {
@@ -295,11 +295,11 @@ Scenario: Tentar criar visitante sem campos obrigatórios
 ### Cenário 3.5: Deletar visitante da lista
 ```gherkin
 Scenario: Deletar visitante específico da lista
-  Given que existe um morador com ID "507f1f77bcf86cd799439011"
-  And o morador possui visitantes cadastrados
+  Given que existe um resident com ID "507f1f77bcf86cd799439011"
+  And o resident possui visitantes cadastrados
   And existe um visitante com CPF "98765432100"
   When eu envio uma requisição DELETE para "/visitantes"
-  And o parâmetro "moradorId" é "507f1f77bcf86cd799439011"
+  And o parâmetro "residentId" é "507f1f77bcf86cd799439011"
   And o corpo da requisição contém:
     """
     {
@@ -317,15 +317,15 @@ Scenario: Deletar visitante específico da lista
 ### Cenário 4.1: Buscar lista de visitas
 ```gherkin
 Feature: Gerenciamento de visitas
-  Como um morador
+  Como um resident
   Quero gerenciar minhas visitas agendadas
   Para controlar o acesso ao condomínio
 
 Scenario: Buscar lista de visitas existente
-  Given que existe um morador com ID "507f1f77bcf86cd799439011"
-  And o morador possui visitas agendadas
+  Given que existe um resident com ID "507f1f77bcf86cd799439011"
+  And o resident possui visitas agendadas
   When eu envio uma requisição GET para "/visitas"
-  And o parâmetro "moradorId" é "507f1f77bcf86cd799439011"
+  And o parâmetro "residentId" é "507f1f77bcf86cd799439011"
   Then o status da resposta deve ser 200
   And a resposta deve conter:
     """
@@ -357,9 +357,9 @@ Scenario: Buscar lista de visitas existente
 ### Cenário 4.2: Criar/atualizar lista de visitas
 ```gherkin
 Scenario: Agendar novas visitas
-  Given que existe um morador com ID "507f1f77bcf86cd799439011"
+  Given que existe um resident com ID "507f1f77bcf86cd799439011"
   When eu envio uma requisição POST para "/visitas"
-  And o parâmetro "moradorId" é "507f1f77bcf86cd799439011"
+  And o parâmetro "residentId" é "507f1f77bcf86cd799439011"
   And o corpo da requisição contém:
     """
     {
@@ -390,9 +390,9 @@ Scenario: Agendar novas visitas
 ### Cenário 4.3: Criar visita com dados inválidos
 ```gherkin
 Scenario: Tentar agendar visita sem campos obrigatórios
-  Given que existe um morador com ID "507f1f77bcf86cd799439011"
+  Given que existe um resident com ID "507f1f77bcf86cd799439011"
   When eu envio uma requisição POST para "/visitas"
-  And o parâmetro "moradorId" é "507f1f77bcf86cd799439011"
+  And o parâmetro "residentId" é "507f1f77bcf86cd799439011"
   And o corpo da requisição contém:
     """
     {
@@ -410,12 +410,12 @@ Scenario: Tentar agendar visita sem campos obrigatórios
   And a resposta deve conter uma mensagem de erro "Dados inválidos"
 ```
 
-### Cenário 4.4: Agendar visita para morador inexistente
+### Cenário 4.4: Agendar visita para resident inexistente
 ```gherkin
-Scenario: Tentar agendar visita para morador que não existe
-  Given que não existe um morador com ID "507f1f77bcf86cd799439999"
+Scenario: Tentar agendar visita para resident que não existe
+  Given que não existe um resident com ID "507f1f77bcf86cd799439999"
   When eu envio uma requisição POST para "/visitas"
-  And o parâmetro "moradorId" é "507f1f77bcf86
+  And o parâmetro "residentId" é "507f1f77bcf86
 cd799439999"
   And o corpo da requisição contém:
     """
@@ -432,17 +432,17 @@ cd799439999"
     }
     """
   Then o status da resposta deve ser 404
-  And a resposta deve conter uma mensagem de erro "Morador não encontrado"
+  And a resposta deve conter uma mensagem de erro "Resident não encontrado"
 ```
 
 ### Cenário 4.5: Deletar visita específica
 ```gherkin
 Scenario: Deletar visita agendada
-  Given que existe um morador com ID "507f1f77bcf86cd799439011"
-  And o morador possui visitas agendadas
+  Given que existe um resident com ID "507f1f77bcf86cd799439011"
+  And o resident possui visitas agendadas
   And existe uma visita com ID "507f1f77bcf86cd799439022"
   When eu envio uma requisição DELETE para "/visitas"
-  And o parâmetro "moradorId" é "507f1f77bcf86cd799439011"
+  And o parâmetro "residentId" é "507f1f77bcf86cd799439011"
   And o corpo da requisição contém:
     """
     {
@@ -453,12 +453,12 @@ Scenario: Deletar visita agendada
   And a resposta deve conter uma mensagem de sucesso
 ```
 
-### Cenário 4.6: Buscar visitas para morador inexistente
+### Cenário 4.6: Buscar visitas para resident inexistente
 ```gherkin
-Scenario: Buscar visitas de morador que não existe
-  Given que não existe um morador com ID "507f1f77bcf86cd799439999"
+Scenario: Buscar visitas de resident que não existe
+  Given que não existe um resident com ID "507f1f77bcf86cd799439999"
   When eu envio uma requisição GET para "/visitas"
-  And o parâmetro "moradorId" é "507f1f77bcf86cd799439999"
+  And o parâmetro "residentId" é "507f1f77bcf86cd799439999"
   Then o status da resposta deve ser 404
   And a resposta deve conter uma mensagem de erro "Lista de visitas não encontrada"
 ```
@@ -488,9 +488,9 @@ Scenario: Erro interno do servidor em qualquer endpoint
 
 ### Cenário 5.2: Parâmetros obrigatórios ausentes
 ```gherkin
-Scenario: Requisição sem parâmetro obrigatório moradorId
+Scenario: Requisição sem parâmetro obrigatório residentId
   When eu envio uma requisição GET para "/visitas"
-  And não forneço o parâmetro "moradorId"
+  And não forneço o parâmetro "residentId"
   Then o status da resposta deve ser 400
   And a resposta deve conter uma mensagem de erro indicando parâmetro obrigatório
 ```
@@ -516,9 +516,9 @@ Feature: Validação de dados de entrada
   Para garantir integridade dos dados
 
 Scenario: CPF em formato inválido
-  Given que existe um morador com ID "507f1f77bcf86cd799439011"
+  Given que existe um resident com ID "507f1f77bcf86cd799439011"
   When eu envio uma requisição POST para "/visitantes"
-  And o parâmetro "moradorId" é "507f1f77bcf86cd799439011"
+  And o parâmetro "residentId" é "507f1f77bcf86cd799439011"
   And o corpo da requisição contém:
     """
     {
@@ -552,9 +552,9 @@ Scenario: Email em formato inválido no registro
 ### Cenário 6.3: Validação de data
 ```gherkin
 Scenario: Data em formato inválido para visita
-  Given que existe um morador com ID "507f1f77bcf86cd799439011"
+  Given que existe um resident com ID "507f1f77bcf86cd799439011"
   When eu envio uma requisição POST para "/visitas"
-  And o parâmetro "moradorId" é "507f1f77bcf86cd799439011"
+  And o parâmetro "residentId" é "507f1f77bcf86cd799439011"
   And o corpo da requisição contém:
     """
     {
@@ -585,9 +585,9 @@ Feature: Cenários limite
   Para garantir robustez da aplicação
 
 Scenario: Criar lista vazia de visitantes
-  Given que existe um morador com ID "507f1f77bcf86cd799439011"
+  Given que existe um resident com ID "507f1f77bcf86cd799439011"
   When eu envio uma requisição POST para "/visitantes"
-  And o parâmetro "moradorId" é "507f1f77bcf86cd799439011"
+  And o parâmetro "residentId" é "507f1f77bcf86cd799439011"
   And o corpo da requisição contém:
     """
     {
@@ -601,9 +601,9 @@ Scenario: Criar lista vazia de visitantes
 ### Cenário 7.2: Nome muito longo
 ```gherkin
 Scenario: Visitante com nome muito longo
-  Given que existe um morador com ID "507f1f77bcf86cd799439011"
+  Given que existe um resident com ID "507f1f77bcf86cd799439011"
   When eu envio uma requisição POST para "/visitantes"
-  And o parâmetro "moradorId" é "507f1f77bcf86cd799439011"
+  And o parâmetro "residentId" é "507f1f77bcf86cd799439011"
   And o corpo da requisição contém um visitante com nome de 1000 caracteres
   Then o status da resposta deve ser 400
   And a resposta deve conter uma mensagem de erro sobre tamanho do campo
@@ -612,9 +612,9 @@ Scenario: Visitante com nome muito longo
 ### Cenário 7.3: Múltiplas visitas no mesmo horário
 ```gherkin
 Scenario: Agendar múltiplas visitas para o mesmo horário
-  Given que existe um morador com ID "507f1f77bcf86cd799439011"
+  Given que existe um resident com ID "507f1f77bcf86cd799439011"
   When eu envio uma requisição POST para "/visitas"
-  And o parâmetro "moradorId" é "507f1f77bcf86cd799439011"
+  And o parâmetro "residentId" é "507f1f77bcf86cd799439011"
   And o corpo da requisição contém:
     """
     {
@@ -647,12 +647,12 @@ Scenario: Agendar múltiplas visitas para o mesmo horário
 ### Cenário 8.1: Fluxo completo de cadastro e agendamento
 ```gherkin
 Feature: Fluxo integrado
-  Como um morador
+  Como um resident
   Quero realizar um fluxo completo
   Para testar a integração entre funcionalidades
 
 Scenario: Fluxo completo - Registro, login, cadastro de visitante e agendamento
-  Given que não existe um morador com email "fluxo@teste.com"
+  Given que não existe um resident com email "fluxo@teste.com"
   
   # Registro
   When eu envio uma requisição POST para "/auth/register"
@@ -664,7 +664,7 @@ Scenario: Fluxo completo - Registro, login, cadastro de visitante e agendamento
     }
     """
   Then o status da resposta deve ser 200
-  And eu armazeno o ID do morador retornado
+  And eu armazeno o ID do resident retornado
   
   # Login
   When eu envio uma requisição POST para "/auth/login"
@@ -679,7 +679,7 @@ Scenario: Fluxo completo - Registro, login, cadastro de visitante e agendamento
   
   # Cadastrar visitante
   When eu envio uma requisição POST para "/visitantes"
-  And o parâmetro "moradorId" é o ID armazenado
+  And o parâmetro "residentId" é o ID armazenado
   And o corpo da requisição contém:
     """
     {
@@ -695,7 +695,7 @@ Scenario: Fluxo completo - Registro, login, cadastro de visitante e agendamento
   
   # Agendar visita
   When eu envio uma requisição POST para "/visitas"
-  And o parâmetro "moradorId" é o ID armazenado
+  And o parâmetro "residentId" é o ID armazenado
   And o corpo da requisição contém:
     """
     {
@@ -747,7 +747,7 @@ Scenario: Fluxo completo - Registro, login, cadastro de visitante e agendamento
 
 ### Total de Cenários por Funcionalidade:
 - **Autenticação**: 5 cenários
-- **Moradores**: 5 cenários
+- **Residentes**: 5 cenários
 - **Visitantes**: 5 cenários
 - **Visitas**: 6 cenários
 - **Tratamento de Erros**: 3 cenários

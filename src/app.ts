@@ -95,6 +95,35 @@ class App {
     // API routes logging middleware
     apiRouter.use((req: Request, res: Response, next: NextFunction) => {
       console.log(`${req.method} ${req.path} - ${new Date().toISOString()}`);
+
+      // Capture original methods
+      const originalSend = res.send;
+      const originalJson = res.json;
+      const originalStatus = res.status;
+      let statusCode = 200;
+
+      // Override res.status to capture status code
+      res.status = function (code: number) {
+        statusCode = code;
+        return originalStatus.call(this, code);
+      };
+
+      // Override res.send to log errors only
+      res.send = function (body: any) {
+        if (statusCode >= 400) {
+          console.log(`❌ Error: ${typeof body === 'string' ? body : JSON.stringify(body)}`);
+        }
+        return originalSend.call(this, body);
+      };
+
+      // Override res.json to log errors only
+      res.json = function (body: any) {
+        if (statusCode >= 400) {
+          console.log(`❌ Error: ${JSON.stringify(body)}`);
+        }
+        return originalJson.call(this, body);
+      };
+
       next();
     });
 
@@ -102,7 +131,6 @@ class App {
     apiRouter.use('/auth/users', authenticateToken);
     apiRouter.use('/auth/logout', authenticateToken);
     apiRouter.use('/resident', authenticateToken);
-    apiRouter.use('/visitantes', authenticateToken);
     apiRouter.use('/visitas', authenticateToken);
 
     // Register TSOA routes to the API router

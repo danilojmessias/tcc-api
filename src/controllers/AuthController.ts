@@ -1,8 +1,9 @@
 import { Controller, Get, Post, Route, Body, Tags, Response, Request } from 'tsoa';
-import { Morador } from '../models/Morador';
+import { Resident } from '../models';
 import { ErrorResponse } from '../interfaces/common';
 import { generateToken, addToBlacklist, AuthenticatedRequest, JWTPayload, tokenBlacklist } from '../middleware/auth';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 interface LoginRequest {
   email: string;
@@ -15,10 +16,8 @@ interface RegisterRequest {
 }
 
 interface AuthResponse {
-  resident: {
-    _id: string;
-    email: string;
-  };
+  id: string;
+  email: string;
   token: string;
 }
 
@@ -28,10 +27,8 @@ interface LogoutResponse {
 
 interface TokenValidationResponse {
   valid: boolean;
-  resident?: {
-    _id: string;
-    email: string;
-  };
+  id?: string;
+  email?: string;
   message?: string;
 }
 
@@ -64,7 +61,7 @@ export class AuthController extends Controller {
     try {
       const { email, password } = requestBody;
 
-      // Validate required fields
+      // Validate input
       if (!email || !password) {
         console.log('Login error: Email and password are required');
         this.setStatus(400);
@@ -72,30 +69,27 @@ export class AuthController extends Controller {
       }
 
       // Find resident by email
-      const resident = await Morador.findOne({ email: email.toLowerCase() }).select('+password');
-
+      const resident = await Resident.findOne({ email: email.toLowerCase() });
       if (!resident) {
-        console.log(`Login error: No resident found with email: ${email}`);
+        console.log('Login error: Invalid credentials - resident not found');
         this.setStatus(401);
         throw new Error('Invalid credentials');
       }
 
       // Verify password
-      const isPasswordValid = await resident.comparePassword(password);
+      const isPasswordValid = await bcrypt.compare(password, resident.password);
       if (!isPasswordValid) {
-        console.log(`Login error: Invalid password for email: ${email}`);
+        console.log('Login error: Invalid credentials - password mismatch');
         this.setStatus(401);
         throw new Error('Invalid credentials');
       }
 
-      // Generate JWT token
+      // Generate token
       const token = generateToken((resident._id as any).toString(), resident.email);
 
       return {
-        resident: {
-          _id: (resident._id as any).toString(),
-          email: resident.email
-        },
+        id: (resident._id as any).toString(),
+        email: resident.email,
         token
       };
     } catch (error) {
@@ -123,61 +117,52 @@ export class AuthController extends Controller {
     try {
       const { email, password } = requestBody;
 
-      // Validate required fields
+      // Validate input
       if (!email || !password) {
         console.log('Register error: Email and password are required');
         this.setStatus(400);
         throw new Error('Email and password are required');
       }
 
-      // Validate password strength
       if (password.length < 6) {
-        console.log('Register error: Password too short');
+        console.log('Register error: Password must be at least 6 characters');
         this.setStatus(400);
-        throw new Error('Password must be at least 6 characters long');
-      }
-
-      // Validate email format
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        console.log(`Register error: Invalid email format: ${email}`);
-        this.setStatus(400);
-        throw new Error('Invalid email format');
+        throw new Error('Password must be at least 6 characters');
       }
 
       // Check if resident already exists
-      const existingResident = await Morador.findOne({ email: email.toLowerCase() });
+      const existingResident = await Resident.findOne({ email: email.toLowerCase() });
       if (existingResident) {
-        console.log(`Register error: Email already registered: ${email}`);
+        console.log('Register error: Resident already exists with this email');
         this.setStatus(409);
-        throw new Error('Email already registered');
+        throw new Error('Resident already exists with this email');
       }
 
+      // Hash password
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+
       // Create new resident
-      const resident = new Morador({
+      const newResident = new Resident({
         email: email.toLowerCase(),
-        password
+        password: hashedPassword
       });
 
-      const savedResident = await resident.save();
+      const savedResident = await newResident.save();
 
-      // Generate JWT token
+      // Generate token
       const token = generateToken((savedResident._id as any).toString(), savedResident.email);
 
-      this.setStatus(201);
       return {
-        resident: {
-          _id: (savedResident._id as any).toString(),
-          email: savedResident.email
-        },
+        id: (savedResident._id as any).toString(),
+        email: savedResident.email,
         token
       };
     } catch (error) {
       if (error instanceof Error && (
         error.message === 'Email and password are required' ||
-        error.message === 'Password must be at least 6 characters long' ||
-        error.message === 'Invalid email format' ||
-        error.message === 'Email already registered'
+        error.message === 'Password must be at least 6 characters' ||
+        error.message === 'Resident already exists with this email'
       )) {
         throw error;
       }
@@ -196,8 +181,8 @@ export class AuthController extends Controller {
   @Response<ErrorResponse>(500, 'Internal server error')
   public async listUsers(@Request() request: AuthenticatedRequest): Promise<UserListResponse> {
     try {
-      // Find all residents and exclude password from response
-      const residents = await Morador.find({}).select('-password').sort({ createdAt: -1 });
+      // Find all residents
+      const residents = await Resident.find({}).sort({ createdAt: -1 });
 
       const users = residents.map(resident => ({
         _id: (resident._id as any).toString(),
@@ -292,7 +277,7 @@ export class AuthController extends Controller {
         const decoded = jwt.verify(token, jwtSecret) as JWTPayload;
 
         // Verify user still exists
-        const user = await Morador.findById(decoded.userId);
+        const user = await Resident.findById(decoded.userId);
         if (!user) {
           return {
             valid: false,
@@ -302,10 +287,8 @@ export class AuthController extends Controller {
 
         return {
           valid: true,
-          resident: {
-            _id: decoded.userId,
-            email: decoded.email
-          }
+          id: decoded.userId,
+          email: decoded.email
         };
       } catch (jwtError) {
         if (jwtError instanceof jwt.JsonWebTokenError) {

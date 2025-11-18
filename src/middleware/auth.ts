@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { Morador } from '../models/Morador';
+import { Resident } from '../models/Resident';
 
 export interface AuthenticatedRequest extends Request {
     user?: {
@@ -51,7 +51,7 @@ export const authenticateToken = async (
         const decoded = jwt.verify(token, jwtSecret) as JWTPayload;
 
         // Verify user still exists
-        const user = await Morador.findById(decoded.userId);
+        const user = await Resident.findById(decoded.userId);
         if (!user) {
             console.log(`Auth middleware error: User not found with ID: ${decoded.userId}`);
             res.status(401).json({ message: 'User not found' });

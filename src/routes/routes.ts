@@ -4,11 +4,11 @@
 import type { TsoaRoute } from '@tsoa/runtime';
 import {  fetchMiddlewares, ExpressTemplateService } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { VisitasController } from './../controllers/VisitasController';
+import { VisitsController } from './../controllers/VisitsController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { VisitantesController } from './../controllers/VisitantesController';
+import { ResidentController } from './../controllers/ResidentController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { ResidentController } from './../controllers/MoradorController';
+import { GuestController } from './../controllers/GuestController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { AuthController } from './../controllers/AuthController';
 import type { Request as ExRequest, Response as ExResponse, RequestHandler, Router } from 'express';
@@ -66,50 +66,19 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "VisitaCreateRequest": {
+    "VisitCreateRequest": {
         "dataType": "refObject",
         "properties": {
-            "visitante": {"dataType":"nestedObjectLiteral","nestedProperties":{"descricao":{"dataType":"string"},"tipo":{"dataType":"string"},"cpf":{"dataType":"string","required":true},"nome":{"dataType":"string","required":true}},"required":true},
-            "data": {"dataType":"string","required":true},
+            "guestId": {"dataType":"string","required":true},
+            "date": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ListaVisitasRequest": {
+    "ListaVisitsRequest": {
         "dataType": "refObject",
         "properties": {
-            "visitas": {"dataType":"array","array":{"dataType":"refObject","ref":"VisitaCreateRequest"},"required":true},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "VisitorListResponse": {
-        "dataType": "refObject",
-        "properties": {
-            "_id": {"dataType":"string","required":true},
-            "residentId": {"dataType":"string","required":true},
-            "records": {"dataType":"array","array":{"dataType":"refObject","ref":"VisitorResponse"},"required":true},
-            "createdAt": {"dataType":"string","required":true},
-            "updatedAt": {"dataType":"string","required":true},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "VisitanteCreateRequest": {
-        "dataType": "refObject",
-        "properties": {
-            "nome": {"dataType":"string","required":true},
-            "cpf": {"dataType":"string","required":true},
-            "tipo": {"dataType":"string"},
-            "descricao": {"dataType":"string"},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ListaVisitantesRequest": {
-        "dataType": "refObject",
-        "properties": {
-            "registros": {"dataType":"array","array":{"dataType":"refObject","ref":"VisitanteCreateRequest"},"required":true},
+            "visits": {"dataType":"array","array":{"dataType":"refObject","ref":"VisitCreateRequest"},"required":true},
         },
         "additionalProperties": false,
     },
@@ -121,7 +90,6 @@ const models: TsoaRoute.Models = {
             "name": {"dataType":"string"},
             "cpf": {"dataType":"string"},
             "phone": {"dataType":"string"},
-            "email": {"dataType":"string","required":true},
             "block": {"dataType":"string"},
             "apartment": {"dataType":"string"},
             "createdAt": {"dataType":"string","required":true},
@@ -136,10 +104,54 @@ const models: TsoaRoute.Models = {
             "name": {"dataType":"string"},
             "cpf": {"dataType":"string"},
             "phone": {"dataType":"string"},
-            "email": {"dataType":"string","required":true},
-            "password": {"dataType":"string","required":true},
             "block": {"dataType":"string"},
-            "apartment": {"dataType":"string"},
+            "apartment": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"double"}]},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "GuestResponse": {
+        "dataType": "refObject",
+        "properties": {
+            "_id": {"dataType":"string","required":true},
+            "cpf": {"dataType":"string","required":true},
+            "nome": {"dataType":"string","required":true},
+            "descricao": {"dataType":"string"},
+            "tipo": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":[1]},{"dataType":"enum","enums":[2]}],"required":true},
+            "residentId": {"dataType":"string","required":true},
+            "createdAt": {"dataType":"string","required":true},
+            "updatedAt": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "GuestListResponse": {
+        "dataType": "refObject",
+        "properties": {
+            "_id": {"dataType":"string","required":true},
+            "residentId": {"dataType":"string","required":true},
+            "guests": {"dataType":"array","array":{"dataType":"refObject","ref":"GuestResponse"},"required":true},
+            "createdAt": {"dataType":"string","required":true},
+            "updatedAt": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "GuestCreateRequest": {
+        "dataType": "refObject",
+        "properties": {
+            "cpf": {"dataType":"string","required":true},
+            "nome": {"dataType":"string","required":true},
+            "descricao": {"dataType":"string"},
+            "tipo": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":[1]},{"dataType":"enum","enums":[2]}],"required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ListaGuestsRequest": {
+        "dataType": "refObject",
+        "properties": {
+            "guests": {"dataType":"array","array":{"dataType":"refObject","ref":"GuestCreateRequest"},"required":true},
         },
         "additionalProperties": false,
     },
@@ -147,7 +159,8 @@ const models: TsoaRoute.Models = {
     "AuthResponse": {
         "dataType": "refObject",
         "properties": {
-            "resident": {"dataType":"nestedObjectLiteral","nestedProperties":{"email":{"dataType":"string","required":true},"_id":{"dataType":"string","required":true}},"required":true},
+            "id": {"dataType":"string","required":true},
+            "email": {"dataType":"string","required":true},
             "token": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
@@ -192,7 +205,8 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "valid": {"dataType":"boolean","required":true},
-            "resident": {"dataType":"nestedObjectLiteral","nestedProperties":{"email":{"dataType":"string","required":true},"_id":{"dataType":"string","required":true}}},
+            "id": {"dataType":"string"},
+            "email": {"dataType":"string"},
             "message": {"dataType":"string"},
         },
         "additionalProperties": false,
@@ -215,26 +229,26 @@ export function RegisterRoutes(app: Router) {
 
 
     
-        const argsVisitasController_getVisitas: Record<string, TsoaRoute.ParameterSchema> = {
-                moradorId: {"in":"query","name":"moradorId","required":true,"dataType":"string"},
+        const argsVisitsController_getVisits: Record<string, TsoaRoute.ParameterSchema> = {
+                residentId: {"in":"query","name":"residentId","required":true,"dataType":"string"},
                 request: {"in":"request","name":"request","required":true,"dataType":"object"},
         };
-        app.get('/visitas',
-            ...(fetchMiddlewares<RequestHandler>(VisitasController)),
-            ...(fetchMiddlewares<RequestHandler>(VisitasController.prototype.getVisitas)),
+        app.get('/visits',
+            ...(fetchMiddlewares<RequestHandler>(VisitsController)),
+            ...(fetchMiddlewares<RequestHandler>(VisitsController.prototype.getVisits)),
 
-            async function VisitasController_getVisitas(request: ExRequest, response: ExResponse, next: any) {
+            async function VisitsController_getVisits(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsVisitasController_getVisitas, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsVisitsController_getVisits, request, response });
 
-                const controller = new VisitasController();
+                const controller = new VisitsController();
 
               await templateService.apiHandler({
-                methodName: 'getVisitas',
+                methodName: 'getVisits',
                 controller,
                 response,
                 next,
@@ -246,27 +260,27 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsVisitasController_createOrUpdateVisitas: Record<string, TsoaRoute.ParameterSchema> = {
-                moradorId: {"in":"query","name":"moradorId","required":true,"dataType":"string"},
-                requestBody: {"in":"body","name":"requestBody","required":true,"ref":"ListaVisitasRequest"},
+        const argsVisitsController_createOrUpdateVisits: Record<string, TsoaRoute.ParameterSchema> = {
+                residentId: {"in":"query","name":"residentId","required":true,"dataType":"string"},
+                requestBody: {"in":"body","name":"requestBody","required":true,"ref":"ListaVisitsRequest"},
                 request: {"in":"request","name":"request","required":true,"dataType":"object"},
         };
-        app.post('/visitas',
-            ...(fetchMiddlewares<RequestHandler>(VisitasController)),
-            ...(fetchMiddlewares<RequestHandler>(VisitasController.prototype.createOrUpdateVisitas)),
+        app.post('/visits',
+            ...(fetchMiddlewares<RequestHandler>(VisitsController)),
+            ...(fetchMiddlewares<RequestHandler>(VisitsController.prototype.createOrUpdateVisits)),
 
-            async function VisitasController_createOrUpdateVisitas(request: ExRequest, response: ExResponse, next: any) {
+            async function VisitsController_createOrUpdateVisits(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsVisitasController_createOrUpdateVisitas, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsVisitsController_createOrUpdateVisits, request, response });
 
-                const controller = new VisitasController();
+                const controller = new VisitsController();
 
               await templateService.apiHandler({
-                methodName: 'createOrUpdateVisitas',
+                methodName: 'createOrUpdateVisits',
                 controller,
                 response,
                 next,
@@ -278,122 +292,27 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsVisitasController_deleteVisita: Record<string, TsoaRoute.ParameterSchema> = {
-                moradorId: {"in":"query","name":"moradorId","required":true,"dataType":"string"},
-                requestBody: {"in":"body","name":"requestBody","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"visitaId":{"dataType":"string","required":true}}},
+        const argsVisitsController_deleteVisit: Record<string, TsoaRoute.ParameterSchema> = {
+                residentId: {"in":"query","name":"residentId","required":true,"dataType":"string"},
+                requestBody: {"in":"body","name":"requestBody","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"visitId":{"dataType":"string","required":true}}},
                 request: {"in":"request","name":"request","required":true,"dataType":"object"},
         };
-        app.delete('/visitas',
-            ...(fetchMiddlewares<RequestHandler>(VisitasController)),
-            ...(fetchMiddlewares<RequestHandler>(VisitasController.prototype.deleteVisita)),
+        app.delete('/visits',
+            ...(fetchMiddlewares<RequestHandler>(VisitsController)),
+            ...(fetchMiddlewares<RequestHandler>(VisitsController.prototype.deleteVisit)),
 
-            async function VisitasController_deleteVisita(request: ExRequest, response: ExResponse, next: any) {
+            async function VisitsController_deleteVisit(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsVisitasController_deleteVisita, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsVisitsController_deleteVisit, request, response });
 
-                const controller = new VisitasController();
-
-              await templateService.apiHandler({
-                methodName: 'deleteVisita',
-                controller,
-                response,
-                next,
-                validatedArgs,
-                successStatus: undefined,
-              });
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsVisitantesController_getVisitantes: Record<string, TsoaRoute.ParameterSchema> = {
-                moradorId: {"in":"query","name":"moradorId","required":true,"dataType":"string"},
-                request: {"in":"request","name":"request","required":true,"dataType":"object"},
-        };
-        app.get('/visitantes',
-            ...(fetchMiddlewares<RequestHandler>(VisitantesController)),
-            ...(fetchMiddlewares<RequestHandler>(VisitantesController.prototype.getVisitantes)),
-
-            async function VisitantesController_getVisitantes(request: ExRequest, response: ExResponse, next: any) {
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsVisitantesController_getVisitantes, request, response });
-
-                const controller = new VisitantesController();
+                const controller = new VisitsController();
 
               await templateService.apiHandler({
-                methodName: 'getVisitantes',
-                controller,
-                response,
-                next,
-                validatedArgs,
-                successStatus: undefined,
-              });
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsVisitantesController_createOrUpdateVisitantes: Record<string, TsoaRoute.ParameterSchema> = {
-                moradorId: {"in":"query","name":"moradorId","required":true,"dataType":"string"},
-                requestBody: {"in":"body","name":"requestBody","required":true,"ref":"ListaVisitantesRequest"},
-                request: {"in":"request","name":"request","required":true,"dataType":"object"},
-        };
-        app.post('/visitantes',
-            ...(fetchMiddlewares<RequestHandler>(VisitantesController)),
-            ...(fetchMiddlewares<RequestHandler>(VisitantesController.prototype.createOrUpdateVisitantes)),
-
-            async function VisitantesController_createOrUpdateVisitantes(request: ExRequest, response: ExResponse, next: any) {
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsVisitantesController_createOrUpdateVisitantes, request, response });
-
-                const controller = new VisitantesController();
-
-              await templateService.apiHandler({
-                methodName: 'createOrUpdateVisitantes',
-                controller,
-                response,
-                next,
-                validatedArgs,
-                successStatus: undefined,
-              });
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsVisitantesController_deleteVisitante: Record<string, TsoaRoute.ParameterSchema> = {
-                moradorId: {"in":"query","name":"moradorId","required":true,"dataType":"string"},
-                requestBody: {"in":"body","name":"requestBody","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"cpf":{"dataType":"string","required":true}}},
-                request: {"in":"request","name":"request","required":true,"dataType":"object"},
-        };
-        app.delete('/visitantes',
-            ...(fetchMiddlewares<RequestHandler>(VisitantesController)),
-            ...(fetchMiddlewares<RequestHandler>(VisitantesController.prototype.deleteVisitante)),
-
-            async function VisitantesController_deleteVisitante(request: ExRequest, response: ExResponse, next: any) {
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsVisitantesController_deleteVisitante, request, response });
-
-                const controller = new VisitantesController();
-
-              await templateService.apiHandler({
-                methodName: 'deleteVisitante',
+                methodName: 'deleteVisit',
                 controller,
                 response,
                 next,
@@ -438,6 +357,7 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsResidentController_createResident: Record<string, TsoaRoute.ParameterSchema> = {
                 requestBody: {"in":"body","name":"requestBody","required":true,"ref":"ResidentCreateRequest"},
+                request: {"in":"request","name":"request","required":true,"dataType":"object"},
         };
         app.post('/resident',
             ...(fetchMiddlewares<RequestHandler>(ResidentController)),
@@ -486,6 +406,101 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'deleteResident',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsGuestController_getGuests: Record<string, TsoaRoute.ParameterSchema> = {
+                residentId: {"in":"query","name":"residentId","required":true,"dataType":"string"},
+                request: {"in":"request","name":"request","required":true,"dataType":"object"},
+        };
+        app.get('/guests',
+            ...(fetchMiddlewares<RequestHandler>(GuestController)),
+            ...(fetchMiddlewares<RequestHandler>(GuestController.prototype.getGuests)),
+
+            async function GuestController_getGuests(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsGuestController_getGuests, request, response });
+
+                const controller = new GuestController();
+
+              await templateService.apiHandler({
+                methodName: 'getGuests',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsGuestController_createOrUpdateGuests: Record<string, TsoaRoute.ParameterSchema> = {
+                residentId: {"in":"query","name":"residentId","required":true,"dataType":"string"},
+                requestBody: {"in":"body","name":"requestBody","required":true,"ref":"ListaGuestsRequest"},
+                request: {"in":"request","name":"request","required":true,"dataType":"object"},
+        };
+        app.post('/guests',
+            ...(fetchMiddlewares<RequestHandler>(GuestController)),
+            ...(fetchMiddlewares<RequestHandler>(GuestController.prototype.createOrUpdateGuests)),
+
+            async function GuestController_createOrUpdateGuests(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsGuestController_createOrUpdateGuests, request, response });
+
+                const controller = new GuestController();
+
+              await templateService.apiHandler({
+                methodName: 'createOrUpdateGuests',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsGuestController_deleteGuest: Record<string, TsoaRoute.ParameterSchema> = {
+                residentId: {"in":"query","name":"residentId","required":true,"dataType":"string"},
+                requestBody: {"in":"body","name":"requestBody","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"guestId":{"dataType":"string","required":true}}},
+                request: {"in":"request","name":"request","required":true,"dataType":"object"},
+        };
+        app.delete('/guests',
+            ...(fetchMiddlewares<RequestHandler>(GuestController)),
+            ...(fetchMiddlewares<RequestHandler>(GuestController.prototype.deleteGuest)),
+
+            async function GuestController_deleteGuest(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsGuestController_deleteGuest, request, response });
+
+                const controller = new GuestController();
+
+              await templateService.apiHandler({
+                methodName: 'deleteGuest',
                 controller,
                 response,
                 next,

@@ -119,119 +119,33 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"VisitaCreateRequest": {
+			"VisitCreateRequest": {
 				"properties": {
-					"visitante": {
-						"properties": {
-							"descricao": {
-								"type": "string"
-							},
-							"tipo": {
-								"type": "string"
-							},
-							"cpf": {
-								"type": "string"
-							},
-							"nome": {
-								"type": "string"
-							}
-						},
-						"required": [
-							"cpf",
-							"nome"
-						],
-						"type": "object"
+					"guestId": {
+						"type": "string"
 					},
-					"data": {
+					"date": {
 						"type": "string"
 					}
 				},
 				"required": [
-					"visitante",
-					"data"
+					"guestId",
+					"date"
 				],
 				"type": "object",
 				"additionalProperties": false
 			},
-			"ListaVisitasRequest": {
+			"ListaVisitsRequest": {
 				"properties": {
-					"visitas": {
+					"visits": {
 						"items": {
-							"$ref": "#/components/schemas/VisitaCreateRequest"
+							"$ref": "#/components/schemas/VisitCreateRequest"
 						},
 						"type": "array"
 					}
 				},
 				"required": [
-					"visitas"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"VisitorListResponse": {
-				"properties": {
-					"_id": {
-						"type": "string"
-					},
-					"residentId": {
-						"type": "string"
-					},
-					"records": {
-						"items": {
-							"$ref": "#/components/schemas/VisitorResponse"
-						},
-						"type": "array"
-					},
-					"createdAt": {
-						"type": "string"
-					},
-					"updatedAt": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"_id",
-					"residentId",
-					"records",
-					"createdAt",
-					"updatedAt"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"VisitanteCreateRequest": {
-				"properties": {
-					"nome": {
-						"type": "string"
-					},
-					"cpf": {
-						"type": "string"
-					},
-					"tipo": {
-						"type": "string"
-					},
-					"descricao": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"nome",
-					"cpf"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"ListaVisitantesRequest": {
-				"properties": {
-					"registros": {
-						"items": {
-							"$ref": "#/components/schemas/VisitanteCreateRequest"
-						},
-						"type": "array"
-					}
-				},
-				"required": [
-					"registros"
+					"visits"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -250,9 +164,6 @@
 					"phone": {
 						"type": "string"
 					},
-					"email": {
-						"type": "string"
-					},
 					"block": {
 						"type": "string"
 					},
@@ -268,7 +179,6 @@
 				},
 				"required": [
 					"_id",
-					"email",
 					"createdAt",
 					"updatedAt"
 				],
@@ -286,49 +196,155 @@
 					"phone": {
 						"type": "string"
 					},
-					"email": {
-						"type": "string"
-					},
-					"password": {
-						"type": "string"
-					},
 					"block": {
 						"type": "string"
 					},
 					"apartment": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "number",
+								"format": "double"
+							}
+						]
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"GuestResponse": {
+				"properties": {
+					"_id": {
+						"type": "string"
+					},
+					"cpf": {
+						"type": "string"
+					},
+					"nome": {
+						"type": "string"
+					},
+					"descricao": {
+						"type": "string"
+					},
+					"tipo": {
+						"type": "number",
+						"enum": [
+							1,
+							2
+						]
+					},
+					"residentId": {
+						"type": "string"
+					},
+					"createdAt": {
+						"type": "string"
+					},
+					"updatedAt": {
 						"type": "string"
 					}
 				},
 				"required": [
-					"email",
-					"password"
+					"_id",
+					"cpf",
+					"nome",
+					"tipo",
+					"residentId",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"GuestListResponse": {
+				"properties": {
+					"_id": {
+						"type": "string"
+					},
+					"residentId": {
+						"type": "string"
+					},
+					"guests": {
+						"items": {
+							"$ref": "#/components/schemas/GuestResponse"
+						},
+						"type": "array"
+					},
+					"createdAt": {
+						"type": "string"
+					},
+					"updatedAt": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"_id",
+					"residentId",
+					"guests",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"GuestCreateRequest": {
+				"properties": {
+					"cpf": {
+						"type": "string"
+					},
+					"nome": {
+						"type": "string"
+					},
+					"descricao": {
+						"type": "string"
+					},
+					"tipo": {
+						"type": "number",
+						"enum": [
+							1,
+							2
+						]
+					}
+				},
+				"required": [
+					"cpf",
+					"nome",
+					"tipo"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ListaGuestsRequest": {
+				"properties": {
+					"guests": {
+						"items": {
+							"$ref": "#/components/schemas/GuestCreateRequest"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"guests"
 				],
 				"type": "object",
 				"additionalProperties": false
 			},
 			"AuthResponse": {
 				"properties": {
-					"resident": {
-						"properties": {
-							"email": {
-								"type": "string"
-							},
-							"_id": {
-								"type": "string"
-							}
-						},
-						"required": [
-							"email",
-							"_id"
-						],
-						"type": "object"
+					"id": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
 					},
 					"token": {
 						"type": "string"
 					}
 				},
 				"required": [
-					"resident",
+					"id",
+					"email",
 					"token"
 				],
 				"type": "object",
@@ -434,20 +450,11 @@
 					"valid": {
 						"type": "boolean"
 					},
-					"resident": {
-						"properties": {
-							"email": {
-								"type": "string"
-							},
-							"_id": {
-								"type": "string"
-							}
-						},
-						"required": [
-							"email",
-							"_id"
-						],
-						"type": "object"
+					"id": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
 					},
 					"message": {
 						"type": "string"
@@ -465,16 +472,16 @@
 	"info": {
 		"title": "TCC API",
 		"version": "1.0.0",
-		"description": "API para gerenciamento de moradores, visitantes e visitas",
+		"description": "API para gerenciamento de residentes, visitantes e visitas",
 		"license": {
 			"name": "ISC"
 		},
 		"contact": {}
 	},
 	"paths": {
-		"/visitas": {
+		"/visits": {
 			"get": {
-				"operationId": "GetVisitas",
+				"operationId": "GetVisits",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -517,15 +524,15 @@
 						}
 					}
 				},
-				"description": "Buscar lista de visitas por ID do morador",
+				"description": "Buscar lista de visitas por ID do resident",
 				"tags": [
-					"Visitas"
+					"Visits"
 				],
 				"security": [],
 				"parameters": [
 					{
 						"in": "query",
-						"name": "moradorId",
+						"name": "residentId",
 						"required": true,
 						"schema": {
 							"type": "string"
@@ -534,7 +541,7 @@
 				]
 			},
 			"post": {
-				"operationId": "CreateOrUpdateVisitas",
+				"operationId": "CreateOrUpdateVisits",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -567,7 +574,7 @@
 						}
 					},
 					"404": {
-						"description": "Morador não encontrado",
+						"description": "Resident não encontrado",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -589,13 +596,13 @@
 				},
 				"description": "Inserir/atualizar lista de visitas",
 				"tags": [
-					"Visitas"
+					"Visits"
 				],
 				"security": [],
 				"parameters": [
 					{
 						"in": "query",
-						"name": "moradorId",
+						"name": "residentId",
 						"required": true,
 						"schema": {
 							"type": "string"
@@ -607,14 +614,14 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/ListaVisitasRequest"
+								"$ref": "#/components/schemas/ListaVisitsRequest"
 							}
 						}
 					}
 				}
 			},
 			"delete": {
-				"operationId": "DeleteVisita",
+				"operationId": "DeleteVisit",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -667,13 +674,13 @@
 				},
 				"description": "Deletar visita da lista",
 				"tags": [
-					"Visitas"
+					"Visits"
 				],
 				"security": [],
 				"parameters": [
 					{
 						"in": "query",
-						"name": "moradorId",
+						"name": "residentId",
 						"required": true,
 						"schema": {
 							"type": "string"
@@ -686,240 +693,12 @@
 						"application/json": {
 							"schema": {
 								"properties": {
-									"visitaId": {
+									"visitId": {
 										"type": "string"
 									}
 								},
 								"required": [
-									"visitaId"
-								],
-								"type": "object"
-							}
-						}
-					}
-				}
-			}
-		},
-		"/visitantes": {
-			"get": {
-				"operationId": "GetVisitantes",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/VisitorListResponse"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ErrorResponse"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Lista de visitantes não encontrada",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ErrorResponse"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Erro interno do servidor",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ErrorResponse"
-								}
-							}
-						}
-					}
-				},
-				"description": "Buscar lista de visitantes por ID do morador",
-				"tags": [
-					"Visitantes"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "query",
-						"name": "moradorId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
-			},
-			"post": {
-				"operationId": "CreateOrUpdateVisitantes",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/VisitorListResponse"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Dados inválidos",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ErrorResponse"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ErrorResponse"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Morador não encontrado",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ErrorResponse"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Erro interno do servidor",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ErrorResponse"
-								}
-							}
-						}
-					}
-				},
-				"description": "Inserir/atualizar lista de visitantes",
-				"tags": [
-					"Visitantes"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "query",
-						"name": "moradorId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/ListaVisitantesRequest"
-							}
-						}
-					}
-				}
-			},
-			"delete": {
-				"operationId": "DeleteVisitante",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"message": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"message"
-									],
-									"type": "object"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ErrorResponse"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Lista de visitantes não encontrada",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ErrorResponse"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Erro interno do servidor",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ErrorResponse"
-								}
-							}
-						}
-					}
-				},
-				"description": "Deletar visitante da lista",
-				"tags": [
-					"Visitantes"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "query",
-						"name": "moradorId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"properties": {
-									"cpf": {
-										"type": "string"
-									}
-								},
-								"required": [
-									"cpf"
+									"visitId"
 								],
 								"type": "object"
 							}
@@ -1012,8 +791,28 @@
 							}
 						}
 					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Resident not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
 					"409": {
-						"description": "Resident already exists",
+						"description": "Data conflict",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -1033,7 +832,7 @@
 						}
 					}
 				},
-				"description": "Create/register resident",
+				"description": "Update resident profile information",
 				"tags": [
 					"Residents"
 				],
@@ -1117,6 +916,234 @@
 						}
 					}
 				]
+			}
+		},
+		"/guests": {
+			"get": {
+				"operationId": "GetGuests",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GuestListResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Lista de guests não encontrada",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Erro interno do servidor",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Buscar lista de guests por ID do resident",
+				"tags": [
+					"Guests"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "residentId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"post": {
+				"operationId": "CreateOrUpdateGuests",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GuestListResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Dados inválidos",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Resident não encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Erro interno do servidor",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Inserir/atualizar lista de guests",
+				"tags": [
+					"Guests"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "residentId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ListaGuestsRequest"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteGuest",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Lista de guests não encontrada",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Erro interno do servidor",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Deletar guest da lista",
+				"tags": [
+					"Guests"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "residentId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"guestId": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"guestId"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/auth/login": {

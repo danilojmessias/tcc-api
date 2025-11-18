@@ -1,5 +1,7 @@
-export { Morador, IMorador } from './Morador';
-export { Visitante, IVisitante } from './Visitante';
-export { Visita, IVisita } from './Visita';
-export { ListaVisitantes, IListaVisitantes } from './ListaVisitantes';
-export { ListaVisitas, IListaVisitas } from './ListaVisitas';
+
+
+export { Resident, IResident } from './Resident'
+export { Visit, IVisit } from './Visit';
+export { ListaVisits, IListaVisits } from './ListaVisits';
+export { Guest, IGuest } from './Guest';
+export { ListaGuests, IListaGuests } from './ListaGuests';
